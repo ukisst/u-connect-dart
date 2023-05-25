@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:uuid/uuid.dart';
 import 'package:wallet_connect/models/bitcoin/uc_bitcoin_sign_message.dart';
@@ -21,6 +22,7 @@ import 'package:wallet_connect/models/wc_encryption_payload.dart';
 import 'package:wallet_connect/models/wc_method.dart';
 import 'package:wallet_connect/models/wc_peer_meta.dart';
 import 'package:wallet_connect/models/wc_socket_message.dart';
+import 'package:wallet_connect/utils/hex.dart';
 import 'package:wallet_connect/wc_cipher.dart';
 import 'package:wallet_connect/wc_session_store.dart';
 import 'package:web_socket_channel/io.dart';
@@ -416,7 +418,8 @@ class WCClient {
         break;
       case WCMethod.BTC_SIGN_TRANSACTION:
         // print('BTC_SIGN_TRANSACTION $request');
-        final param = UCBitcoinTransaction.fromJson(request.params!.first);
+        String param = request.params!.first;
+        final param = UCBitcoinTransaction.fromJson();
         onBtcSignTransaction?.call(request.id, param);
         break;
       case WCMethod.BTC_SEND_TRANSACTION:
