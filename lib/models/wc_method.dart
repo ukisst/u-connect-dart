@@ -1,11 +1,14 @@
 import 'package:json_annotation/json_annotation.dart';
 
 enum WCMethod {
-  @JsonValue("wc_sessionRequest")
+  @JsonValue("uc_sessionRequest")
   SESSION_REQUEST,
 
-  @JsonValue("wc_sessionUpdate")
+  @JsonValue("uc_sessionUpdate")
   SESSION_UPDATE,
+
+  @JsonValue("wallet_switchEthereumChain")
+  WALLET_SWITCH_NETWORK,
 
   @JsonValue("eth_sign")
   ETH_SIGN,
@@ -22,6 +25,12 @@ enum WCMethod {
   @JsonValue("eth_sendTransaction")
   ETH_SEND_TRANSACTION,
 
-  @JsonValue("wallet_switchEthereumChain")
-  WALLET_SWITCH_NETWORK,
+  @JsonValue("btc_sign")
+  BTC_SIGN,
+
+  @JsonValue("btc_signTransaction")
+  BTC_SIGN_TRANSACTION,
+
+  @JsonValue("btc_sendTransaction")
+  BTC_SEND_TRANSACTION,
 }

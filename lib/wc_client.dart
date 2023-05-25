@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:uuid/uuid.dart';
+import 'package:wallet_connect/models/bitcoin/uc_bitcoin_sign_message.dart';
+import 'package:wallet_connect/models/bitcoin/uc_bitcoin_transaction.dart';
 import 'package:wallet_connect/models/ethereum/wc_ethereum_sign_message.dart';
 import 'package:wallet_connect/models/ethereum/wc_ethereum_transaction.dart';
 import 'package:wallet_connect/models/ethereum/wc_wallet_switch_network.dart';
@@ -28,12 +30,12 @@ typedef SessionRequest = void Function(int id, WCPeerMeta peerMeta);
 typedef SocketError = void Function(dynamic message);
 typedef SocketClose = void Function(int? code, String? reason);
 typedef EthSign = void Function(int id, WCEthereumSignMessage message);
-typedef EthTransaction = void Function(
-    int id, WCEthereumTransaction transaction);
+typedef EthTransaction = void Function(int id, WCEthereumTransaction transaction);
+typedef BtcSign = void Function(int id, UCBitcoinSignMessage message);
+typedef BtcTransaction = void Function(int id, UCBitcoinTransaction transaction);
 typedef CustomRequest = void Function(int id, String payload);
 typedef WalletSwitchNetwork = void Function(int id, int chainId);
-typedef SessionUpdate = void Function(
-    int id, bool approved, int? chainId, List<String>? accounts);
+typedef SessionUpdate = void Function(int id, bool approved, int? chainId, List<String>? accounts);
 
 class WCClient {
   late WebSocketChannel _webSocket;
@@ -57,6 +59,9 @@ class WCClient {
     this.onEthSign,
     this.onEthSignTransaction,
     this.onEthSendTransaction,
+    this.onBtcSign,
+    this.onBtcSignTransaction,
+    this.onBtcSendTransaction,
     this.onWalletSwitchNetwork,
     this.onCustomRequest,
     this.onConnect,
@@ -69,6 +74,8 @@ class WCClient {
   final SocketClose? onDisconnect;
   final EthSign? onEthSign;
   final EthTransaction? onEthSignTransaction, onEthSendTransaction;
+  final BtcSign? onBtcSign;
+  final BtcTransaction? onBtcSignTransaction, onBtcSendTransaction;
   final CustomRequest? onCustomRequest;
   final WalletSwitchNetwork? onWalletSwitchNetwork;
   final SessionUpdate? onSessionUpdate;
@@ -125,7 +132,7 @@ class WCClient {
         chainId: _chainId!,
       );
 
-  approveSession({required List<String> accounts, int? chainId}) {
+  approveSession({required List<String> accounts, required List<String> publicKeys, int? chainId}) {
     if (_handshakeId <= 0) {
       throw HandshakeException();
     }
@@ -134,6 +141,7 @@ class WCClient {
     final result = WCApproveSessionResponse(
       chainId: _chainId,
       accounts: accounts,
+      publicKeys: publicKeys,
       peerId: _peerId!,
       peerMeta: _peerMeta!,
     );
@@ -220,8 +228,7 @@ class WCClient {
     _peerId = peerId;
     _remotePeerId = remotePeerId;
     _chainId = chainId;
-    final bridgeUri =
-        Uri.parse(session.bridge.replaceAll('https://', 'wss://'));
+    final bridgeUri = Uri.parse(session.bridge.replaceAll('https://', 'wss://'));
     final ws = await WebSocket.connect(
       bridgeUri.toString(),
       customClient: customClient,
@@ -297,8 +304,7 @@ class WCClient {
   }
 
   Future<String> _decrypt(WCSocketMessage socketMessage) async {
-    final payload =
-        WCEncryptionPayload.fromJson(jsonDecode(socketMessage.payload));
+    final payload = WCEncryptionPayload.fromJson(jsonDecode(socketMessage.payload));
     final decrypted = await WCCipher.decrypt(payload, _session!.key);
     // print("DECRYPTED: $decrypted");
     return decrypted;
@@ -336,8 +342,7 @@ class WCClient {
         if (!param.approved) {
           killSession(reason: "Session Update Closed");
         }
-        onSessionUpdate?.call(
-            request.id, param.approved, param.chainId, param.accounts);
+        onSessionUpdate?.call(request.id, param.approved, param.chainId, param.accounts);
         break;
       case WCMethod.ETH_SIGN:
         // print('ETH_SIGN $request');
@@ -393,6 +398,31 @@ class WCClient {
         // print('ETH_SEND_TRANSACTION $request');
         final param = WCEthereumTransaction.fromJson(request.params!.first);
         onEthSendTransaction?.call(request.id, param);
+        break;
+
+      case WCMethod.BTC_SIGN:
+        // print('BTC_SIGN $request');
+        final params = request.params!.cast<String>();
+        if (params.length < 2) {
+          throw InvalidJsonRpcParamsException(request.id);
+        }
+
+        onBtcSign?.call(
+          request.id,
+          UCBitcoinSignMessage(
+            raw: params,
+          ),
+        );
+        break;
+      case WCMethod.BTC_SIGN_TRANSACTION:
+        // print('BTC_SIGN_TRANSACTION $request');
+        final param = UCBitcoinTransaction.fromJson(request.params!.first);
+        onBtcSignTransaction?.call(request.id, param);
+        break;
+      case WCMethod.BTC_SEND_TRANSACTION:
+        // print('BTC_SEND_TRANSACTION $request');
+        final param = UCBitcoinTransaction.fromJson(request.params!.first);
+        onBtcSendTransaction?.call(request.id, param);
         break;
       case WCMethod.WALLET_SWITCH_NETWORK:
         // print('WALLET_SWITCH_NETWORK $request');

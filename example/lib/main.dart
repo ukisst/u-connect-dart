@@ -284,6 +284,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onApprove: (chainId) async {
           _wcClient.approveSession(
             accounts: [walletAddress],
+            publicKeys: [],
             chainId: chainId,
           );
           _sessionStore = _wcClient.sessionStore;
