@@ -39,7 +39,7 @@ Wallet Connect client in dart highly inspired from [wallet-connect-kotlin](https
     );
 ```
 
-2.  Create WCSession object from wc: uri.
+2.  Create WCSession object from uc: uri.
 
 ```dart
     final session = WCSession.from(wcUri);

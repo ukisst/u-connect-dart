@@ -41,8 +41,7 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-const rpcUri =
-    'https://rpc-mainnet.maticvigil.com/v1/140d92ff81094f0f3d7babde06603390d7e581be';
+const rpcUri = 'https://rpc-mainnet.maticvigil.com/v1/140d92ff81094f0f3d7babde06603390d7e581be';
 
 enum MenuItems {
   PREVIOUS_SESSION,
@@ -208,8 +207,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: InAppWebView(
-        initialUrlRequest:
-            URLRequest(url: Uri.parse('https://example.walletconnect.org')),
+        initialUrlRequest: URLRequest(url: Uri.parse('https://example.walletconnect.org')),
         initialOptions: InAppWebViewGroupOptions(
           crossPlatform: InAppWebViewOptions(
             useShouldOverrideUrlLoading: true,
@@ -222,11 +220,10 @@ class _MyHomePageState extends State<MyHomePage> {
           final url = navAction.request.url.toString();
           debugPrint('URL $url');
           if (url.contains('wc?uri=')) {
-            final wcUri = Uri.parse(
-                Uri.decodeFull(Uri.parse(url).queryParameters['uri']!));
+            final wcUri = Uri.parse(Uri.decodeFull(Uri.parse(url).queryParameters['uri']!));
             _qrScanHandler(wcUri.toString());
             return NavigationActionPolicy.CANCEL;
-          } else if (url.startsWith('wc:')) {
+          } else if (url.startsWith('uc:')) {
             _qrScanHandler(url);
             return NavigationActionPolicy.CANCEL;
           } else {
@@ -245,9 +242,7 @@ class _MyHomePageState extends State<MyHomePage> {
         name: "Example Wallet",
         url: "https://example.wallet",
         description: "Example Wallet",
-        icons: [
-          "https://gblobscdn.gitbook.com/spaces%2F-LJJeCjcLrr53DcT1Ml7%2Favatar.png"
-        ],
+        icons: ["https://gblobscdn.gitbook.com/spaces%2F-LJJeCjcLrr53DcT1Ml7%2Favatar.png"],
       );
       _wcClient.connectNewSession(session: session, peerMeta: peerMeta);
     }
@@ -256,9 +251,7 @@ class _MyHomePageState extends State<MyHomePage> {
   _connectToPreviousSession() {
     final _sessionSaved = _prefs.getString('session');
     debugPrint('_sessionSaved $_sessionSaved');
-    _sessionStore = _sessionSaved != null
-        ? WCSessionStore.fromJson(jsonDecode(_sessionSaved))
-        : null;
+    _sessionStore = _sessionSaved != null ? WCSessionStore.fromJson(jsonDecode(_sessionSaved)) : null;
     if (_sessionStore != null) {
       debugPrint('_sessionStore $_sessionStore');
       _wcClient.connectFromSessionStore(_sessionStore!);
@@ -294,8 +287,7 @@ class _MyHomePageState extends State<MyHomePage> {
             chainId: chainId,
           );
           _sessionStore = _wcClient.sessionStore;
-          await _prefs.setString(
-              'session', jsonEncode(_wcClient.sessionStore.toJson()));
+          await _prefs.setString('session', jsonEncode(_wcClient.sessionStore.toJson()));
           Navigator.pop(context);
         },
         onReject: () {
@@ -552,8 +544,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Theme(
-              data:
-                  Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: ExpansionTile(
@@ -645,8 +636,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Theme(
-              data:
-                  Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: ExpansionTile(
@@ -677,8 +667,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     onPressed: () async {
                       String signedDataHex;
-                      if (ethereumSignMessage.type ==
-                          WCSignType.TYPED_MESSAGE) {
+                      if (ethereumSignMessage.type == WCSignType.TYPED_MESSAGE) {
                         signedDataHex = EthSigUtil.signTypedData(
                           privateKey: privateKey,
                           jsonData: ethereumSignMessage.data!,
@@ -686,10 +675,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         );
                       } else {
                         final creds = EthPrivateKey.fromHex(privateKey);
-                        final encodedMessage =
-                            hexToBytes(ethereumSignMessage.data!);
-                        final signedData =
-                            await creds.signPersonalMessage(encodedMessage);
+                        final encodedMessage = hexToBytes(ethereumSignMessage.data!);
+                        final signedData = await creds.signPersonalMessage(encodedMessage);
                         signedDataHex = bytesToHex(signedData, include0x: true);
                       }
                       debugPrint('SIGNED $signedDataHex');
@@ -728,17 +715,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return Transaction(
       from: EthereumAddress.fromHex(ethereumTransaction.from),
       to: EthereumAddress.fromHex(ethereumTransaction.to!),
-      maxGas: ethereumTransaction.gasLimit != null
-          ? int.tryParse(ethereumTransaction.gasLimit!)
-          : null,
-      gasPrice: ethereumTransaction.gasPrice != null
-          ? EtherAmount.inWei(BigInt.parse(ethereumTransaction.gasPrice!))
-          : null,
+      maxGas: ethereumTransaction.gasLimit != null ? int.tryParse(ethereumTransaction.gasLimit!) : null,
+      gasPrice: ethereumTransaction.gasPrice != null ? EtherAmount.inWei(BigInt.parse(ethereumTransaction.gasPrice!)) : null,
       value: EtherAmount.inWei(BigInt.parse(ethereumTransaction.value ?? '0')),
       data: hexToBytes(ethereumTransaction.data!),
-      nonce: ethereumTransaction.nonce != null
-          ? int.tryParse(ethereumTransaction.nonce!)
-          : null,
+      nonce: ethereumTransaction.nonce != null ? int.tryParse(ethereumTransaction.nonce!) : null,
     );
   }
 }

@@ -15,14 +15,14 @@ class WCSession {
     required this.key,
   });
 
-  String toUri() => "wc:$topic@$version?bridge=$bridge&key=$key";
+  String toUri() => "uc:$topic@$version?bridge=$bridge&key=$key";
 
   factory WCSession.from(String wcUri) {
-    if (!wcUri.startsWith("wc:")) {
+    if (!wcUri.startsWith("uc:")) {
       return WCSession.empty();
     }
 
-    final uriString = wcUri.replaceAll("wc:", "wc://");
+    final uriString = wcUri.replaceAll("uc:", "uc://");
     final uri = Uri.parse(uriString);
     final bridge = uri.queryParameters["bridge"];
     final key = uri.queryParameters["key"];
@@ -36,11 +36,9 @@ class WCSession {
     return WCSession(topic: topic, version: version, bridge: bridge, key: key);
   }
 
-  factory WCSession.empty() =>
-      WCSession(topic: '', version: '', bridge: '', key: '');
+  factory WCSession.empty() => WCSession(topic: '', version: '', bridge: '', key: '');
 
-  factory WCSession.fromJson(Map<String, dynamic> json) =>
-      _$WCSessionFromJson(json);
+  factory WCSession.fromJson(Map<String, dynamic> json) => _$WCSessionFromJson(json);
   Map<String, dynamic> toJson() => _$WCSessionToJson(this);
 
   @override
@@ -52,11 +50,7 @@ class WCSession {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is WCSession &&
-        other.topic == topic &&
-        other.version == version &&
-        other.bridge == bridge &&
-        other.key == key;
+    return other is WCSession && other.topic == topic && other.version == version && other.bridge == bridge && other.key == key;
   }
 
   @override
