@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:uuid/uuid.dart';
 import 'package:wallet_connect/models/bitcoin/uc_bitcoin_sign_message.dart';
@@ -22,7 +21,6 @@ import 'package:wallet_connect/models/wc_encryption_payload.dart';
 import 'package:wallet_connect/models/wc_method.dart';
 import 'package:wallet_connect/models/wc_peer_meta.dart';
 import 'package:wallet_connect/models/wc_socket_message.dart';
-import 'package:wallet_connect/utils/hex.dart';
 import 'package:wallet_connect/wc_cipher.dart';
 import 'package:wallet_connect/wc_session_store.dart';
 import 'package:web_socket_channel/io.dart';
@@ -331,7 +329,7 @@ class WCClient {
     switch (request.method) {
       case WCMethod.SESSION_REQUEST:
         final param = WCSessionRequest.fromJson(request.params!.first);
-        // print('SESSION_REQUEST $param');
+        print('SESSION_REQUEST $param');
         _handshakeId = request.id;
         _remotePeerId = param.peerId;
         _remotePeerMeta = param.peerMeta;
@@ -347,7 +345,7 @@ class WCClient {
         onSessionUpdate?.call(request.id, param.approved, param.chainId, param.accounts);
         break;
       case WCMethod.ETH_SIGN:
-        // print('ETH_SIGN $request');
+        print('ETH_SIGN ${request.toString()}');
         final params = request.params!.cast<String>();
         if (params.length < 2) {
           throw InvalidJsonRpcParamsException(request.id);
@@ -362,7 +360,7 @@ class WCClient {
         );
         break;
       case WCMethod.ETH_PERSONAL_SIGN:
-        // print('ETH_PERSONAL_SIGN $request');
+        print('ETH_PERSONAL_SIGN ${request.toString()}');
         final params = request.params!.cast<String>();
         if (params.length < 2) {
           throw InvalidJsonRpcParamsException(request.id);
@@ -377,7 +375,7 @@ class WCClient {
         );
         break;
       case WCMethod.ETH_SIGN_TYPE_DATA:
-        // print('ETH_SIGN_TYPE_DATA $request');
+        print('ETH_SIGN_TYPE_DATA ${request.toString()}');
         final params = request.params!.cast<String>();
         if (params.length < 2) {
           throw InvalidJsonRpcParamsException(request.id);
@@ -392,18 +390,18 @@ class WCClient {
         );
         break;
       case WCMethod.ETH_SIGN_TRANSACTION:
-        // print('ETH_SIGN_TRANSACTION $request');
+        print('ETH_SIGN_TRANSACTION ${request.toString()}');
         final param = WCEthereumTransaction.fromJson(request.params!.first);
         onEthSignTransaction?.call(request.id, param);
         break;
       case WCMethod.ETH_SEND_TRANSACTION:
-        // print('ETH_SEND_TRANSACTION $request');
+        print('ETH_SEND_TRANSACTION ${request.toString()}');
         final param = WCEthereumTransaction.fromJson(request.params!.first);
         onEthSendTransaction?.call(request.id, param);
         break;
 
       case WCMethod.BTC_SIGN:
-        // print('BTC_SIGN $request');
+        print('BTC_SIGN ${request.toString()}');
         final params = request.params!.cast<String>();
         if (params.length < 2) {
           throw InvalidJsonRpcParamsException(request.id);
@@ -417,18 +415,17 @@ class WCClient {
         );
         break;
       case WCMethod.BTC_SIGN_TRANSACTION:
-        // print('BTC_SIGN_TRANSACTION $request');
-        String param = request.params!.first;
-        final param = UCBitcoinTransaction.fromJson();
+        print('BTC_SIGN_TRANSACTION ${request.toString()}');
+        final param = UCBitcoinTransaction.fromJson(request.params!.first);
         onBtcSignTransaction?.call(request.id, param);
         break;
       case WCMethod.BTC_SEND_TRANSACTION:
-        // print('BTC_SEND_TRANSACTION $request');
+        print('BTC_SEND_TRANSACTION ${request.toString()}');
         final param = UCBitcoinTransaction.fromJson(request.params!.first);
         onBtcSendTransaction?.call(request.id, param);
         break;
       case WCMethod.WALLET_SWITCH_NETWORK:
-        // print('WALLET_SWITCH_NETWORK $request');
+        print('WALLET_SWITCH_NETWORK ${request.toString()}');
         final params = WCWalletSwitchNetwork.fromJson(request.params!.first);
         onWalletSwitchNetwork?.call(request.id, int.parse(params.chainId));
         break;

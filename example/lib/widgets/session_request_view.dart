@@ -44,20 +44,15 @@ class _SessionRequestViewState extends State<SessionRequestView> {
           ),
         if (widget.peerMeta.url.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Text('Connection to ${widget.peerMeta.url}'),
+            padding: const EdgeInsets.only(bottom: 8.0, left: 16, right: 16),
+            child: Center(
+              child: Text(
+                '${widget.peerMeta.url}',
+                style: TextStyle(color: Colors.black45),
+              ),
+            ),
           ),
-        TextField(
-          onChanged: (v) => setState(() {
-            chainId = v;
-          }),
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            label: Text('Enter Chain Id'),
-            hintText: '(Default: 1)',
-          ),
-        ),
+        SizedBox(height: 10),
         Row(
           children: [
             Expanded(
@@ -67,8 +62,7 @@ class _SessionRequestViewState extends State<SessionRequestView> {
                   backgroundColor: Theme.of(context).colorScheme.secondary,
                 ),
                 onPressed: () {
-                  widget.onApprove(
-                      int.tryParse(chainId) != null ? int.parse(chainId) : 1);
+                  widget.onApprove(int.tryParse(chainId) != null ? int.parse(chainId) : 1);
                 },
                 child: Text('APPROVE'),
               ),

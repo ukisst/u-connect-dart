@@ -1,20 +1,18 @@
 <div align="center">
 <img src="https://github.com/Orange-Wallet/orangewallet-utils/raw/master/assets/images/walletconnect.png" alt="Wallet Connect Logo" width="70"/>
-<h1>Wallet Connect</h1>
+<h1>U-Connect</h1>
 </div>
-
-Wallet Connect client in dart highly inspired from [wallet-connect-kotlin](https://github.com/trustwallet/wallet-connect-kotlin) by [Trust Wallet](https://github.com/trustwallet).
 
 ## Usage
 
 ```dart
-    import 'package:wallet_connect/wallet_connect.dart';
+    import 'package:u_connect/u_connect.dart';
 ```
 
-1.  Create instance of Wallet connect client and define callbacks.
+1.  Create instance of U-Connect client and define callbacks.
 
 ```dart
-    final wcClient = WCClient(
+    final ucClient = ucClient(
       onConnect: () {
         // Respond to connect callback
       },
@@ -39,16 +37,16 @@ Wallet Connect client in dart highly inspired from [wallet-connect-kotlin](https
     );
 ```
 
-2.  Create WCSession object from uc: uri.
+2.  Create UCSession object from uc: uri.
 
 ```dart
-    final session = WCSession.from(wcUri);
+    final session = UCSession.from(ucUri);
 ```
 
-3.  Create WCPeerMeta object containing metadata for your app.
+3.  Create UCPeerMeta object containing metadata for your app.
 
 ```dart
-    final peerMeta = WCPeerMeta(
+    final peerMeta = UCPeerMeta(
         name: 'Example Wallet',
         url: 'https://example.wallet',
         description: 'Example Wallet',
@@ -59,19 +57,19 @@ Wallet Connect client in dart highly inspired from [wallet-connect-kotlin](https
 4.  Connect to a new session.
 
 ```dart
-    wcClient.connectNewSession(session: session, peerMeta: peerMeta);
+    ucClient.connectNewSession(session: session, peerMeta: peerMeta);
 ```
 
 5.  Or connect to a saved session (from step 8).
 
 ```dart
-    wcClient.connectFromSessionStore(sessionStore);
+    ucClient.connectFromSessionStore(sessionStore);
 ```
 
 6.  Approve a session connection request.
 
 ```dart
-    wcClient.approveSession(
+    ucClient.approveSession(
         accounts: [], // account addresses
         chainId: 1, // chain id
     );
@@ -80,19 +78,19 @@ Wallet Connect client in dart highly inspired from [wallet-connect-kotlin](https
 7.  Or reject a session connection request.
 
 ```dart
-    wcClient.rejectSession();
+    ucClient.rejectSession();
 ```
 
 8.  Get active session from sessionStore getter to save for later use.
 
 ```dart
-    final sessionStore = wcClient.sessionStore;
+    final sessionStore = ucClient.sessionStore;
 ```
 
 9.  Approve a sign transaction request by signing the transaction and sending the signed hex data.
 
 ```dart
-    wcClient.approveRequest<String>(
+    ucClient.approveRequest<String>(
         id: id,
         result: signedDataAsHex,
     );
@@ -101,7 +99,7 @@ Wallet Connect client in dart highly inspired from [wallet-connect-kotlin](https
 10. Approve a send transaction request by sending the transaction hash generated from sending the transaction.
 
 ```dart
-    wcClient.approveRequest<String>(
+    ucClient.approveRequest<String>(
         id: id,
         result: transactionHash,
     );
@@ -110,7 +108,7 @@ Wallet Connect client in dart highly inspired from [wallet-connect-kotlin](https
 11. Approve a sign request by sending the signed data hex generated.
 
 ```dart
-    wcClient.approveRequest<String>(
+    ucClient.approveRequest<String>(
         id: id,
         result: signedDataAsHex,
     );
@@ -119,17 +117,17 @@ Wallet Connect client in dart highly inspired from [wallet-connect-kotlin](https
 12. Or reject any of the requests above by specifying request id.
 
 ```dart
-    wcClient.rejectRequest(id: id);
+    ucClient.rejectRequest(id: id);
 ```
 
 13. Disconnect from a connected session locally.
 
 ```dart
-    wcClient.disconnect();
+    ucClient.disconnect();
 ```
 
 14. Permanently close a connected session.
 
 ```dart
-    wcClient.killSession();
+    ucClient.killSession();
 ```

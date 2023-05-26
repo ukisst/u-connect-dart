@@ -5,26 +5,42 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'dart:math';
 
-import 'package:wallet_connect_example/main.dart';
+import 'package:bdk_flutter/bdk_flutter.dart' as bitcoin;
+import 'package:web3dart/crypto.dart';
+import 'package:web3dart/web3dart.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+  print("test");
+  getAWallet();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  // testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  //   // Build our app and trigger a frame.
+  //   await tester.pumpWidget(MyApp());
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  //   // Verify that our counter starts at 0.
+  //   expect(find.text('0'), findsOneWidget);
+  //   expect(find.text('1'), findsNothing);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
-  });
+  //   // Tap the '+' icon and trigger a frame.
+  //   await tester.tap(find.byIcon(Icons.add));
+  //   await tester.pump();
+
+  //   // Verify that our counter has incremented.
+  //   expect(find.text('0'), findsNothing);
+  //   expect(find.text('1'), findsOneWidget);
+  // });
+}
+
+void getAWallet() async {
+  // Or generate a new key randomly
+  Random rng = Random.secure();
+  EthPrivateKey random = EthPrivateKey.createRandom(rng);
+  String privateKey = bytesToHex(random.privateKey);
+// In either way, the library can derive the public key and the address
+// from a private key:
+  EthereumAddress address = await random.address;
+
+  print("ETH---->私钥：${privateKey} ,地址：${address.hexEip55}");
 }

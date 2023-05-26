@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  scan: ^1.4.3
+  scan: ^1.6.0 
   web3dart: ^2.3.0
   shared_preferences: ^2.0.7
   flutter_inappwebview: ^5.7.0
@@ -19,6 +19,8 @@ dependencies:
   eth_sig_util: ^0.0.3
   wallet_connect:
     path: ../
+  bdk_flutter: ^0.28.0
+  coinslib: ^3.1.7
 
 dev_dependencies:
   flutter_test:
